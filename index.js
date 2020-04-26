@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api')
 require('dotenv').config()
 
-const token = process.env.TELEGRAM_TOKEN
+const token = process.env.TELEGRAM_TOKEN_PROD || process.env.TELEGRAM_TOKEN
 const port = process.env.PORT
 const url = process.env.url  || 'https://colivline.herokuapp.com:443';
 
