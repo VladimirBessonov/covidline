@@ -21,12 +21,7 @@ const options = {
 };
 
 // Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {
-    webHook: {
-        port: process.env.PORT,
-        autoOpen: false
-    }
-});
+const bot = new TelegramBot(token, options);
 bot.openWebHook()
 bot.setWebHook(`${process.env.url}/bot${process.env.TOKEN}`)
 
