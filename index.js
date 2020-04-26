@@ -23,7 +23,7 @@ const options = {
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, options);
 bot.openWebHook()
-bot.setWebHook(`${process.env.url}/bot${process.env.TOKEN}`)
+bot.setWebHook(`${url}/bot${token}`)
 
 //
 // const app = new Koa()
