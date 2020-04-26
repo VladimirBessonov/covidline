@@ -1,0 +1,29 @@
+{
+  "name": "smocovidtelegrambot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^8.0.8",
+    "node-telegram-bot-api": "^0.40.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "devstart": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladimirBessonov/covidline.git"
+  },
+  "author": "VB",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VladimirBessonov/covidline/issues"
+  },
+  "homepage": "https://github.com/VladimirBessonov/covidline#readme"
+}
