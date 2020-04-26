@@ -7,7 +7,7 @@ const bodyParser = require('koa-bodyparser')
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.TOKEN
 const port = process.env.PORT
-const url = process.env.url
+const url = process.env.url  || 'https://https://colivline.herokuapp.com:443';
 
 const options = {
     webHook: {
