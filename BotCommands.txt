@@ -1,2 +1,3 @@
 recordtemperature - Record your temperature, store it, generate reports and send it over
-start - Welcome. I am a Bot that helps you with Covid routine
+displaytemperature - Display recorded previously daily temperature
+start - Welcome. I am a Bot that helps you with Covid routines

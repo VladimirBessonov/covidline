@@ -16,7 +16,6 @@ const url = process.env.url  || 'https://colivline.herokuapp.com:443';
 const uristring = process.env.MONGODB_URI
 
 
-
 // Create a bot that uses 'polling' to fetch new updates
 const options = {
     webHook: {
@@ -39,59 +38,34 @@ mongoose.connect(uristring, {useNewUrlParser: true}).
 // Listen for any kind of message. There are different kinds of
 // messages.
 
-var option = {
-    "parse_mode": "Markdown",
-    "reply_markup": {
-        "one_time_keyboard": true,
-        "keyboard": [[{
-            text: "My phone number",
-            request_contact: true
-        }], ["Cancel"]]
-    }
-};
-
-bot.onText(/\/distance1/, (msg) => {
-    bot.sendMessage(msg.chat.id, "How can we contact you?", option).then(() => {
-        bot.once("contact",(msg)=>{
-            var option = {
-                "parse_mode": "Markdown",
-                "reply_markup": {
-                    "one_time_keyboard": true,
-                    "keyboard": [[{
-                        text: "My location",
-                        request_location: true
-                    }], ["Cancel"]]
-                }
-            };
-            bot.sendMessage(msg.chat.id,
-                util.format('Thank you %s with phone %s! And where are you?', msg.contact.first_name, msg.contact.phone_number),
-                option)
-                .then(() => {
-                    bot.once("location",(msg)=>{
-                        bot.sendMessage(msg.chat.id, "We will deliver your order to " + [msg.location.longitude,msg.location.latitude].join(";"));
-                    })
-                })
-        })
-    })
-
-})
 
 bot.onText(/\/recordtemperature/, (msg) => {
 
-    bot.sendMessage(msg.chat.id, "Send me your temperature in F, I will store it for you. You can keep daily records, generate reports and send it over" )
-        .then( () => {
-            bot.once('text', (msg) =>{
+    bot.sendMessage(msg.chat.id, "Send me your temperature in F, I will store it for you. You can keep daily records, generate reports and send it over", {
+        reply_markup: {
+            force_reply: true
+        }}
+        )
+        .then( ( replyPTemp) => {
+            bot.onReplyToMessage(replyPTemp.chat.id, replyPTemp.message_id, (msg) =>{
 
                 if (isNaN(msg.text) ) {
-                    bot.sendMessage(msg.chat.id, 'Enter Number if you want to record the temperature, try again with /recordtemperature')
+                    bot.sendMessage(replyPTemp.chat.id, 'Enter Number if you want to record the temperature, try again with /recordtemperature')
                 } else if ( 90< msg.text == msg.text < 110 ) {
-                    console.log('reply temperature in F',msg.text)
                     TempRecord.addUserTemp(msg.chat.id, parseFloat(msg.text))
+                    bot.sendMessage(replyPTemp.chat.id, 'Received. you can now generate report, send it over, etc', {
+                        parse_mode: "Markdown",
+                        reply_markup : {
+                            "one_time_keyboard": true,
+                            inline_keyboard : Keyboards.reportActions
+                        }
+                    } )
                 } else {
                     bot.sendMessage(msg.chat.id, 'Temperature is out of range for a human. Are you an alien?')
                 }
             })
         })
+        .catch( err => console.log(err))
 
 })
 
@@ -100,27 +74,15 @@ bot.onText(/\/start/, (msg) => {
     bot.sendMessage(msg.chat.id, "Hello. How can help you? See the list of available commands")
 })
 
-bot.onText(/\/update/, (msg) => {
-    var option = {
-        "parse_mode": "Markdown",
-        "reply_markup": {
-            "one_time_keyboard": true,
-            "keyboard": [[{
-                text: "My location",
-                request_location: true
-            }], ["Cancel"]]
-        }
-    };
-    bot.sendMessage(msg.chat.id, "Share with me your live location to get local updates of COVID19 ", option)
-        .then(() => {
-            bot.once("location",(msg)=>{
+bot.on("callback_query", (callbackQuery) => {
+    switch (callbackQuery.data) {
+        case 'deleteTemp':
+            TempRecord.deleteTemp(callbackQuery.message.chat.id)
+            bot.answerCallbackQuery(callbackQuery.id)
+                .then(() => bot.sendMessage(callbackQuery.message.chat.id, "Your temp measurement history is deleted"));
+            break
+    }
+});
 
-                bot.sendMessage(msg.chat.id, "We will deliver your order to " + [msg.location.longitude,msg.location.latitude].join(";"));
-            })
-        })
-
-
-
-})
 
 

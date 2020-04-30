@@ -13,13 +13,8 @@ async function getUser(ID) {
 }
 
 async function addUserTemp(id, temp) {
-
-    // const User = await getUser(ID)
-    // User.tempMeasurement.push([new Date(), temp])
     const User = await getUser(id);
     // User.update( {$push: {tempMeasurement: [new Date(), temp]}});
-    console.log(User)
-    console.log(moment(new Date()).format('YYYY-MM-DD[T00:00:00.000Z]'))
     User.tempMeasurement.push([moment(new Date()).format('YYYY-MM-DD[T00:00:00.000Z]'),temp])
     User.lastTempMeasured = moment(new Date()).format('YYYY-MM-DD[T00:00:00.000Z]')
     return User.save()
@@ -34,11 +29,19 @@ async function sendUserTemp() {
 
 }
 
+async function deleteTemp(id) {
+    const User = await getUser(id);
+    User.tempMeasurement = []
+    return User.save()
+}
+
+
 
 
 module.exports = {
    addUserTemp,
     getUserTemp,
     sendUserTemp,
-    createUser
+    createUser,
+    deleteTemp
 };
